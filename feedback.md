@@ -762,4 +762,5 @@ You now have a fully operational Avail-Powered Optimism-based EVM Rollup. Experi
 
 __Congratulations on setting up your chain!__
 
-<!-- bottom of page link op stack button for github doesnt work -->
+>**Note:** 
+Bottom of page link op-stack button for github doesnt work
