@@ -1,9 +1,28 @@
+# Introduction
 
-### Mismatch in Commands and Documentation
+Embark on setting up your own Avail-Optimism chain. This guide targets Ethereum's Sepolia testnet and Avail Turing testnet. For a detailed understanding, review the Optimism Documentation.
 
-> **Comment:**  
-> - Go version update: `1.20` → `1.21.6`  
-> - Node version update: `16` → `20`
+# Prerequisites
+
+Ensure you have installed the following software.
+
+| Software | Version    |
+|----------|------------|
+| Git      | OS default |
+| Go       | 1.21.6     |
+| Node     | ^20        |
+| Pnpm     | 8.5.6      |
+| Make     | OS default |
+| jq       | OS default |
+| direnv   | Latest     |
+| Foundry  | ^0.2.0     |
+
+> **Note:**  
+Mismatch in commands and docs
+
+> **Note:**  
+> Go version changed from `1.20` to `1.21.6`  
+> Node version updated from `16` to `20`  
 
 ---
 
@@ -12,44 +31,56 @@
 sudo apt install -y git curl make jq
 ```
 > **Note:**  
-> `wget` is also needed. 
+> `wget` is also needed for this setup.
 
 ---
 
-# Install Go
-> **Comment:**  
-> Recommended update for Go installation instructions to Go version `1.21.6`.  
-
-- **Download and install Go 1.21.6**  
-    ```bash
-    wget https://go.dev/dl/go1.21.6.linux-amd64.tar.gz
-    ```
-- **Extract the downloaded tarball**  
-    ```bash
-    tar xvzf go1.21.6.linux-amd64.tar.gz
-    ```
-- **Move Go to the correct directory**  
-    ```bash
-    sudo mv go /usr/local
-    ```
-- **Set the GOROOT and update the PATH in .bashrc**  
-    ```bash
-    echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
-    echo 'export GOPATH=$HOME/go' >> ~/.bashrc
-    echo 'export PATH=$GOROOT/bin:$GOPATH/bin:$PATH' >> ~/.bashrc
-    ```
-- **Reload .bashrc to apply changes**  
-    ```bash
-    source ~/.bashrc
-    ```
-- **Verify Go installation**  
-    ```bash
-    go version
-    ```
+Here’s the restructured content with minor headings for each installation, formatted as copy-paste text:
 
 ---
 
-# Install Node.js
+### Install Git
+```bash
+sudo apt install -y git curl make jq
+```
+> **Note:**  
+> `wget` is also needed for this setup.
+
+---
+
+### Install Go
+
+> **Note:**  
+> Updated instructions for downloading and installing Go version `1.21.6`.
+
+```bash
+# Download and install Go 1.21.6
+wget https://go.dev/dl/go1.21.6.linux-amd64.tar.gz
+
+# Extract the downloaded tarball
+tar xvzf go1.21.6.linux-amd64.tar.gz
+
+# Move Go to the correct directory
+sudo mv go /usr/local
+
+# Set the GOROOT and update the PATH in .bashrc
+echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
+echo 'export GOPATH=$HOME/go' >> ~/.bashrc
+echo 'export PATH=$GOROOT/bin:$GOPATH/bin:$PATH' >> ~/.bashrc
+
+# Reload .bashrc to apply changes
+source ~/.bashrc
+
+# Verify Go installation
+go version
+```
+
+---
+
+### Install Node.js
+> **Note:**  
+> Node version updated to `20`.
+
 ```bash
 curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs npm
@@ -57,134 +88,171 @@ sudo apt-get install -y nodejs npm
 
 ---
 
-# Install Pnpm
+### Install Pnpm
 ```bash
 sudo npm install -g pnpm
 ```
 
 ---
 
-# Install Make
+### Install Make
 ```bash
 sudo apt install -y make
 ```
 
 ---
 
-# Install jq
+### Install jq
 ```bash
 sudo apt install -y jq
 ```
 
 ---
 
-# Install direnv
+### Install direnv
 ```bash
 sudo apt install -y direnv
 ```
 
 ---
 
-### Avail DA Server Setup
-> **Note:**  
-> It’s essential to keep the Avail DA server running for subsequent steps.
+# Setup Avail DA-server
 
-1. **Clone and Navigate to Avail DA Server**  
-    ```bash
-    git clone https://github.com/availproject/avail-alt-da-server.git
-    cd avail-alt-da-server
-    ```
-2. **Build Avail DA Server**  
-    ```bash
-    make da-server
-    ```
-3. **Run DA Sidecar**  
-    ```bash
-    ./bin/avail-da-server ./cmd/avail --addr=localhost --port=8000 --avail.rpc=<WS url to an avail node> --avail.seed=<> --avail.appid=<>
-    ```
-    > **Tip:**  
-    > WS URLs can be found [here](https://docs.availproject.org/docs/networks) or run your own DA node (more complex setup).
+> **Note:**  Explicitly mention to keep this running since later on server is not mentioned at all
 
----
+### Run avail-da server ( manually ). ###
 
-### Running via Docker
-1. Copy `.env.example` to `.env` and fill in necessary values.
-2. Run the following commands:
-    ```bash
-    docker-compose build
-    docker-compose up
-    ```
+Navigate to: 
+```bash
+git clone https://github.com/availproject/avail-alt-da-server.git
+cd avail-alt-da-server
+```
 
----
+Build Avail DA Server: 
 
-### Build the Adapter Source
-1. **Clone and Navigate to Avail Adapter**  
-    ```bash
-    git clone https://github.com/ethereum-optimism/optimism.git
-    cd optimism
-    git fetch --tag --all
-    git checkout v1.9.1
-    git submodule update --init --recursive
-    ```
-2. **Install Modules**  
-    ```bash
-    pnpm install
-    ```
-3. **Compile Necessary Packages**  
-    ```bash
-    make op-node op-batcher op-proposer
-    pnpm build
-    ```
+```bash
+make da-server
+```
+
+Run your DA sidecar: 
+
+```bash
+./bin/avail-da-server 
+./cmd/avail --addr=localhost
+--port=8000 --avail.rpc=<WS url to an avail node> 
+--avail.seed=<> --avail.appid=<>
+```
+
+> Can run your own DA node (harder) or WS url can be found here: 
+https://docs.availproject.org/docs/networks
+
+
+### Run using docker ###
+
+Copy .env.example to .env. Fill the values inside.
 
 ---
 
-### Build the Optimism Geth Source
-1. **Clone and Navigate to op-geth**  
-    ```bash
-    git clone https://github.com/ethereum-optimism/op-geth.git
-    cd op-geth
-    git fetch --tag --all
-    git checkout v1.101408.0
-    ```
-2. **Compile op-geth**  
-    ```bash
-    make geth
-    ```
+```bash
+docker-compose build
+docker-compose up
+```
 
---- 
+# Build the Adapter Source
 
+1. Clone and navigate to the Avail adapter:
 
+```bash
+git clone https://github.com/ethereum-optimism/optimism.git
+cd optimism
+git fetch --tag --all
+git checkout v1.9.1
+git submodule update --init --recursive
+```
 
+2. Install modules:
+
+```bash
+pnpm install
+```
+
+3. Compile the necessary packages:
+
+```bash
+make op-node op-batcher op-proposer
+pnpm build
+```
+
+# Build the Optimism Geth Source
+
+1. Clone and navigate to op-geth:
+
+```bash
+git clone https://github.com/ethereum-optimism/op-geth.git
+cd op-geth
+git fetch --tag --all
+git checkout v1.101408.0
+
+```
+2. Compile op-geth:
+
+```bash
+make geth
+```
+# Get Access to a Sepolia Node
+
+For deploying to Sepolia, access an L1 node using a provider like [Alchemy](https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia) or run your own Sepolia node.
+
+>**Note:**  
+Sepolia links both invalid
+
+>**Note:**  
+Updated alchemy link to 
+https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia\
+for alchemy which will require api key
 
 ### Comments and Suggested Updates
 
-> **Feedback**  
-> - Sepolia links are invalid; update links to Alchemy: `https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia` (requires API key).  
-> - Mention use of Foundry:  
-    ```bash
-    curl -L https://foundry.paradigm.xyz | bash
-    source ~/.bashrc
-    foundryup
-    ```
-> - Add link for Avail wallet setup and app ID creation: [Avail Wallet Guide](https://docs.availproject.org/docs/end-user-guide/app-id).  
-> - Provide link for Avail tokens: [Avail Faucet](https://faucet.avail.tools/).
+# Generate and secure keys
 
----
+> **Note:**  
+Use of foundry not menitoned
 
-### Key Account Creation
+>**Note:**  
+>```bash
+>curl -L https://foundry.paradigm.xyz | bash
+>source ~/.bashrc
+>foundryup 
+>```
+
+> **Note:**  
+Use [this](https://docs.availproject.org/docs/end-user-guide/app-id) guide to set up avail wallet and make app id if you don't have one already
+
+
+ > **Note:**  
+ Go [here](https://faucet.avail.tools) for avail tokens for transaction fees
+
 
 Create four essential accounts with private keys:
 
-- **Admin** (contract upgrade authority)
-- **Batcher** (publishes Sequencer data to L1)
-- **Proposer** (publishes L2 results to L1)
-- **Sequencer** (signs blocks on the p2p network)
+- Admin (contract upgrade authority)
+- Batcher (publishes Sequencer data to L1)
+- Proposer (publishes L2 results to L1)
+- Sequencer (signs blocks on the p2p network)
 
-> **Note:**  
-> Consider reordering commands for clarity. Mention usage of `cast wallet` in the `contracts-bedrock` package for generating keys.
+You can use ```cast wallet``` in the ```contracts-bedrock``` package for key generation:
+
+1. In the Optimism repo, navigate to the [contracts-bedrock package](https://github.com/ethereum-optimism/optimism/tree/129032f15b76b0d2a940443a39433de931a97a44/packages/contracts-bedrock):
 
 ```bash
 cd ~/optimism/packages/contracts-bedrock
+```
+
+2. Generate accounts:
+>**Note:**  
+ reordered these
+
+```bash
 echo "Admin:"
 cast wallet new
 echo "Batcher:"
@@ -195,76 +263,106 @@ echo "Sequencer:"
 cast wallet new
 ```
 
-The output should be similar to:
 
-```plaintext
+You should see an output similar to:
+```
 Admin:
 Successfully created new keypair.
 Address:     0xc4A01194958DE0D90A876e8A5fc9D7B530072148
 Private key: 0xb8e39bd94a210e410c4024e1cc91014de45a5eb1e42f3aa99a368b5a5ac19b45
-...
+Batcher:
+Successfully created new keypair.
+Address:     0xD6857B5BE9468Be67d64ABaB48459378d5329b96
+Private key: 0xe9cd8960fc7984a301d567b819e0c62871eb2c7239c2e66b8f319eaa45c3cbd5
+Proposer:
+Successfully created new keypair.
+Address:     0xFC0374Ae658e46cA4022acA179d3cb6D8e1A4934
+Private key: 0xa9bc1b3f5deb1e00251df68bf86e3493b25bc5430665433546f2f9aacc748d1a
+Sequencer:
+Successfully created new keypair.
+Address:     0x33348817E4B1192D576C4f157e9a5EC93dc5392D
+Private key: 0xd98b49e11e4e0be9931017831395e6644a50c36285d08e14d1a479af5ee08675
 ```
+Record and securely store these key details. You'll need to fund ```Admin```, ```Proposer```, and ```Batcher``` with Sepolia ETH (0.5 ETH for ```Admin```, 0.2 ETH for ```Proposer```, 0.1 ETH for ```Batcher```).
 
-> **Important:**  
-> Securely record these key details. Fund **Admin**, **Proposer**, and **Batcher** with Sepolia ETH (e.g., 0.5 ETH for Admin, 0.2 for Proposer, 0.1 for Batcher).  
-
-> **Production Note:**  
-> Use secure hardware for production key management as `cast wallet` is not production-ready.
+>**NOTE FOR PRODUCTION:**  
+>Use secure hardware for key management in production environments. cast wallet is not designed for production deployments.
 
 ---
 
-### Network Configuration and Setup
+# Network Configuration and Setup
+After building the repositories, configure your chain settings in the [contracts-bedrock package](https://github.com/ethereum-optimism/optimism/tree/129032f15b76b0d2a940443a39433de931a97a44/packages/contracts-bedrock).
 
-Configure chain settings after repository setup in the `contracts-bedrock` package.
-
-> **Feedback**  
-> - Instruct user to copy `.envrc.example` into `.envrc` within `contracts-bedrock`.  
-> - Update the example to match order of commands for user roles.
+1. Ensure you are in the contracts-bedrock sub-directory:
 
 ```bash
 cd ~/optimism/packages/contracts-bedrock
-direnv allow .
-source .envrc
 ```
 
-> **Link:**  
-> Sample `.envrc` example: [Github Link](https://github.com/ethereum-optimism/optimism/blob/develop/.envrc.example)
+2. Activate the environment with direnv:
 
----
+>**Note:**  
+If you need to install direnv, ensure you also modify the shell configuration.
 
-### Core Contract Deployment
 
-Update `deploy-config/getting-started.json` in `contracts-bedrock` for deployment.
+>**Note:**  
+.envrc file not found, instruct user to copy .envrc.example into packages/contracts-bedrock .envrc after creating it
 
-> **Feedback**  
-> Mention `getting_started.json` file is generated in the `deploy-config` folder.
+>**Note:**  
+Example has types of users in wrong order, re-order command to minimize mistakes
+
+>**Note:**  
+Explicitly mention using saved values from cast commands in the .envrc we copied 
 
 ```bash
-cd deploy-config
-nano getting-started.json
+direnv allow .
 ```
 
-Add configuration for AltDA usage:
+>**Note:**  
+ Provide link to sample .envrc https://github.com/ethereum-optimism/optimism/blob/develop/.envrc.example 
 
-```json
-{
-  "useAltDA": true,
+>**Note:**  
+> Mention this:  
+>```bash
+>export L1_RPC_URL="https://eth-sepolia.g.alchemy.com/v2/<your-api-key>"
+>```
+
+>**Note:**  
+> Missed step:
+>```bash
+>source .envrc
+>```
+
+# Core Contract Deployment
+
+Deploy essential L1 contracts for the chain’s functionality:
+
+1. Update ```/optimism/packages/contracts-bedrock/deploy-config``` and update file ```getting_started.json.```
+
+```bash
+cd packages/contracts-bedrock
+./scripts/getting-started/config.sh
+```
+
+>**Note:**  
+>  Mention `getting_started.json` is generated in `deploy-config folder`
+>```bash
+>cd deploy-config
+>nano getting-started.json
+>```
+
+2. Add the following at the bottom of the config generated:
+```
+ "useAltDA": true,
   "daCommitmentType": "GenericCommitment",
   "daChallengeWindow": 160,
   "daResolveWindow": 160,
   "daBondSize": 1000000,
   "daResolverRefundPercentage": 0
-}
 ```
 
----
-
-### Example Configuration
-
-> **Reference Configuration:**  
-> The following is an example config for reference purposes.
-
-```json
+  Example config ( for reference purpose ):
+```
 {
 
  "l1StartingBlockTag": "0x0b2b81474a22fc1122bbb3a465985c5cb40dfd8ef18bfe4fc0a9fa47e775d692",
@@ -351,67 +449,56 @@ Add configuration for AltDA usage:
 
 ```
 
+2. Navigate to `/optimism/packages/contracts-bedrock/deployments`, and create `avail-optimism` directory:
 
-
-### User Feedback on Deployment and Configuration
-
-> **Feedback**  
-> - Update links to `alchemy-sepolia` for valid access: `https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia`  
-> - Clearly specify to use `IMPL_SALT` in the `.envrc` for `contracts-bedrock`.  
-> - Provide specific examples for `l2 chain` options where needed.
-> - For L2 Configuration: Add necessary file setup steps for `genesis.json`, `rollup.json`, and `jwt.txt`.
-
----
-
-### Directory Setup
-1. **Navigate and create a new directory**  
-    ```bash
-    cd ~/optimism/packages/contracts-bedrock/deployments
-    mkdir avail-optimism
-    ```
-
----
-
-### Deployment Command for Contracts
-1. **Deploy contracts** (may take 15 minutes)  
-    ```bash
-    DEPLOYMENT_OUTFILE=deployments/artifact.json \
-    DEPLOY_CONFIG_PATH=deploy-config/getting-started.json \
-    forge script scripts/deploy/Deploy.s.sol:Deploy  --broadcast --private-key $GS_ADMIN_PRIVATE_KEY \
-    --rpc-url $L1_RPC_URL --slow
-    ```
-    > **Note:** Specify `l2 chain` options for clarity.
-
----
-
-### Configuring L2 Allocs
 ```bash
-CONTRACT_ADDRESSES_PATH=deployments/artifact.json DEPLOY_CONFIG_PATH=deploy-config/getting-started.json \
-STATE_DUMP_PATH=deploy-config/statedump.json forge script scripts/L2Genesis.s.sol:L2Genesis --sig 'runWithStateDump()' --chain <YOUR_L2_CHAINID>
+cd ~/optimism/packages/contracts-bedrock/deployments
+mkdir avail-optimism
 ```
 
-> **Comment**  
-> If facing `EvmError: Revert and Script failed`, users should update the `IMPL_SALT` environment variable in `.envrc`. 
-> Explain: reusing the same `IMPL_SALT` will cause the second deployment to fail.
-
----
-
-### L2 Configuration
-After setting up the L1 layer, establish the L2 layer by generating these files:
-- `genesis.json`: for the genesis block
-- `rollup.json`: for rollup settings
-- `jwt.txt`: for secure node communication
-
-Navigate to the op-node directory:
+3. Navigate to `/optimism/packages/contracts-bedrock/` and the deploy contracts (this can take up to 15 minutes):
 
 ```bash
+DEPLOYMENT_OUTFILE=deployments/artifact.json \
+DEPLOY_CONFIG_PATH=deploy-config/getting-started.json \
+forge script scripts/deploy/Deploy.s.sol:Deploy  --broadcast --private-key $GS_ADMIN_PRIVATE_KEY \
+--rpc-url $L1_RPC_URL --slow
+```
+
+>**Note:**  
+ Specify l2 chain options further with examples
+
+4. L2 Allocs
+
+```bash
+CONTRACT_ADDRESSES_PATH=deployments/artifact.json DEPLOY_CONFIG_PATH=deploy-config/getting-started.json STATE_DUMP_PATH=deploy-config/statedump.json forge script scripts/L2Genesis.s.sol:L2Genesis --sig 'runWithStateDump()' --chain <YOUR_L2_CHAINID>
+```
+
+>If you see a nondescript error that includes EvmError: Revert and Script failed then you likely need to change the IMPL_SALT environment variable. This variable determines the addresses of various smart contracts that are deployed via CREATE2.
+
+>**Note:**  
+ Specify IMPL_SALT should be part of envrc
+
+>If the same IMPL_SALT is used to deploy the same contracts twice, the >second deployment will fail.
+>
+>You can generate a new IMPL_SALT by running direnv reload anywhere in >the Avail Optimism Monorepo.
+
+# Setting Up L2 Configuration
+After configuring the L1 layer, focus shifts to establishing the L2 infrastructure. This involves generating three key files:
+
+- genesis.json for the genesis block
+- rollup.json for rollup configurations
+- jwt.txt for secure communication between op-node and op-geth
+
+1. Navigate to the op-node directory:
+
+```bash 
 cd ~/optimism/op-node
 ```
 
-> **Instruction**  
-> Replace `<RPC>` with your specific L1 RPC URL in the command below:
+2. Run the following command, ensuring you replace <RPC> with your specific L1 RPC URL. This generates the genesis.json and rollup.json files:
 
-```bash
+```bash 
 go run cmd/main.go genesis l2 \
 --deploy-config ../packages/contracts-bedrock/deploy-config/getting-started.json \
 --l1-deployments ../packages/contracts-bedrock/deployments/artifact.json \
@@ -420,56 +507,61 @@ go run cmd/main.go genesis l2 \
 --l1-rpc $L1_RPC_URL \
 --l2-allocs ../packages/contracts-bedrock/deploy-config/statedump.json
 ```
+You'll find the newly created genesis.json and rollup.json in the op-node package.
 
-Newly generated files `genesis.json` and `rollup.json` should be in the op-node package.
+3. Add the following at the end of rollup.json:
+```
+ "alt_da": {
+    "da_challenge_contract_address": "0x0000000000000000000000000000000000000000",
+    "da_commitment_type": "GenericCommitment",
+    "da_challenge_window": 160,
+    "da_resolve_window": 160
+  }
+```
+4. Generate a `jwt.txt` file, which is crucial for the secure interaction between nodes:
 
-> **Additional Steps**  
-> - Add `alt_da` configuration to `rollup.json`:
-    ```json
-    "alt_da": {
-        "da_challenge_contract_address": "0x0000000000000000000000000000000000000000",
-        "da_commitment_type": "GenericCommitment",
-        "da_challenge_window": 160,
-        "da_resolve_window": 160
-    }
-    ```
-
-Generate the `jwt.txt` file for node communication:
 ```bash
 openssl rand -hex 32 > jwt.txt
 ```
 
-> **Reminder**  
-> Move `genesis.json` and `jwt.txt` into the `op-geth` directory.
+5. To get op-geth ready, move the genesis.json and jwt.txt files into its directory:
 
----
+```bash 
+cp genesis.json ~/op-geth
+cp jwt.txt ~/op-geth
+```
 
 ### Initialize and Configure op-geth
 
-Navigate to `op-geth`:
+# Initialize and Configure Geth
+
+Prepare `op-geth` for running the chain:
+
+1. Navigate to op-geth:
 
 ```bash
 cd ~/op-geth
 ```
 
-Create a `datadir` directory, then initialize with `genesis.json`:
+2. Create a data directory:
+
+```bash 
+mkdir datadir
+```
+
+3. Initialize with the genesis file:
 
 ```bash
-mkdir datadir
 build/bin/geth init --datadir=datadir genesis.json
 ```
 
-> **Comment**  
-> Add `--state.scheme=hash` to avoid errors on next steps:
-    ```bash
-    ./build/bin/geth --datadir ./datadir --state.scheme=hash init genesis.json
-    ```
+>**Note:**  
+> ./build/bin/geth --datadir ./datadir --state.scheme=hash init genesis.json   
+>I had to specify state.scheme to avoid error in next step
 
----
+### Running op-geth ###
 
-### Running op-geth
-
-To start `op-geth`:
+To initiate `op-geth`, navigate to its directory and execute the following commands:
 
 ```bash
 cd ~/op-geth
@@ -498,17 +590,40 @@ cd ~/op-geth
   --state.scheme=hash
 ```
 
-> **Note**  
-> Running `op-geth` in archive mode is recommended for full state history access.
+```op-geth``` is now active, but block creation will begin once `op-node` is operational.
 
----
+### Why Archive Mode? ###
+Archive mode, requiring more disk space than full mode, is essential for:
 
-### Running op-node
-To run `op-node`:
+1. `op-proposer` to access the full state history.
+2. The explorer's functionality.
 
-> **Tip**  
-> DA server URL can be retrieved from [Avail Networks Documentation](https://docs.availproject.org/docs/networks#for-devs).
+### Reinitializing op-geth ###
 
+In cases of database corruption indicated by `op-node` errors or failure to find L2 heads, follow these steps:
+
+1. Stop `op-geth.`
+2. Remove the existing data:
+```bash
+cd ~/op-geth
+rm -rf datadir/geth
+```
+
+3. Reinitialize:
+
+```bash
+build/bin/geth init --datadir=datadir genesis.json
+```
+
+4. Restart `op-geth` and then `op-node`.
+
+>**Note:**   specify L1_RPC_KIND has to be set in envrc
+
+### Running op-node ###
+
+To launch op-node, which acts as a consensus client, run:
+>**Note:**   DA server can be taken from https://docs.availproject.org/docs/networks#for-devs .  
+    It is the same as rpc url
 ```bash
 cd ~/optimism/op-node
 ./bin/op-node \
@@ -530,13 +645,35 @@ cd ~/optimism/op-node
   --altda.da-service=true \
   --l1.beacon.ignore=true
 ```
+Block creation will commence once op-node starts processing L1 information and interfaces with op-geth.
 
-> **Reminder**  
-> Mention `L1_RPC_KIND` should be set in `.envrc`.
+>**Note:**   I had to run geth with console on with this command to >obtain starting hash and put it in op-node/genesis.json l2 hash manually
+>Start Geth in Attach Mode
+>To start Geth and allow for interactive commands, use:
+>
+>```bash
+>./build/bin/geth \
+>  --datadir ./datadir \
+>  --http --http.addr=0.0.0.0 --http.port=9545 --http.api=eth,web3,net \
+>  --authrpc.addr=:: --authrpc.port=9551 \
+>  --authrpc.jwtsecret=./jwt.txt \
+>  console
+>```
+>This command will start Geth with an interactive console where you can ?>run JavaScript commands.
+>
+>2. Retrieve the Genesis Block Hash
+>Once you have the console open, retrieve the hash of the genesis block >by running:
+>```bash
+>eth.getBlock(0).hash
+>```
 
----
 
-### Geth Console for Genesis Block Hash
+### P2P Synchronization ###
+
+To optimize synchronization and avoid network resource waste:
+
+- Disable p2p sync (--p2p.disable) by default.
+- Use specific command line parameters for synchronization among multiple nodes.
 
 > **Feedback**  
 > Start `geth` in interactive mode to retrieve starting hash:
@@ -549,9 +686,80 @@ cd ~/optimism/op-node
       console
     ```
 
-Retrieve hash with:
-```javascript
-eth.getBlock(0).hash
+# Running op-batcher
+
+`op-batcher` is crucial in publishing transactions from the Sequencer to L1. Ensure it has at least 1 Sepolia ETH for operational continuity.
+
+```bash
+cd ~/optimism/op-batcher
+./bin/op-batcher \
+  --l2-eth-rpc=http://localhost:9545 \
+  --rollup-rpc=http://localhost:8547 \
+  --poll-interval=1s \
+  --sub-safety-margin=6 \
+  --num-confirmations=1 \
+  --safe-abort-nonce-too-low-count=3 \
+  --resubmission-timeout=30s \
+  --rpc.addr=0.0.0.0 \
+  --rpc.port=8548 \
+  --rpc.enable-admin \
+  --max-channel-duration=1 \
+  --l1-eth-rpc=$L1_RPC_URL \
+  --private-key=$GS_BATCHER_PRIVATE_KEY \
+  --altda.enabled=true \
+  --altda.da-service=true \
+  --altda.da-server=<DA_SERVER_HTTP_URL>
 ```
 
----
+### Controlling Batcher Costs ###
+
+Adjust the `--max-channel-duration=n` setting to balance transaction frequency on L1 and the operational costs of the batcher. Recommended is a minumum of 2 since avail block time is 20s and ethereum's 12sec.
+
+### Running op-proposer ###
+
+Finally, start `op-proposer` to propose new state roots:
+
+```bash
+cd ~/optimism/op-proposer
+./bin/op-proposer \
+  --poll-interval=12s \
+  --rpc.port=9560 \
+  --rollup-rpc=http://localhost:8547 \
+  --l2oo-address=$L2OO_ADDR \
+  --private-key=$PROPOSER_KEY \
+  --l1-eth-rpc=$L1_RPC
+  ```
+>**Note:** Inconsistent with docs, it should be  
+   --l1-eth-rpc=$L1_RPC_URL
+
+>**Note:** Missing args in docs   
+  lvl=crit msg="Application failed" message="failed to setup: invalid CLI flags: neither the `DisputeGameFactory` nor `L2OutputOracle` address was provided"   
+Adding this works  
+    --game-factory-address=0x0000000000000000000000000000000000000000   
+    --proposal-interval 3s
+
+
+# Acquire Sepolia ETH for Layer 2
+
+To obtain ETH on your Rollup:
+
+1. Go to `contracts-bedrock`:
+
+```bash
+cd ~/optimism/packages/contracts-bedrock
+```
+
+2. Find the L1 standard bridge contract address:
+
+```bash
+cat deployments/avail-optimism/L1StandardBridgeProxy.json | jq -r .address
+```
+
+3. Send Sepolia ETH to the bridge contract address.
+
+# Conduct Test Transactions
+You now have a fully operational Avail-Powered Optimism-based EVM Rollup. Experiment with it as you would with any other test blockchain.
+
+__Congratulations on setting up your chain!__
+
+<!-- bottom of page link op stack button for github doesnt work -->
