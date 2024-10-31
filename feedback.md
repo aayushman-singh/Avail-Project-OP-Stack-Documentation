@@ -1,139 +1,190 @@
-<!-- Missmatch in commands and docs
 
-Go: 1.20 -> 1.21.6
-Node: 16 -> 20 -->
+### Mismatch in Commands and Documentation
+
+> **Comment:**  
+> - Go version update: `1.20` → `1.21.6`  
+> - Node version update: `16` → `20`
+
+---
 
 # Install Git
-sudo apt install -y git curl make jq 
- <!-- wget also needed -->
+```bash
+sudo apt install -y git curl make jq
+```
+> **Note:**  
+> `wget` is also needed. 
+
+---
+
 # Install Go
+> **Comment:**  
+> Recommended update for Go installation instructions to Go version `1.21.6`.  
 
-<!-- # Download and install Go 1.21.6
-wget https://go.dev/dl/go1.21.6.linux-amd64.tar.gz
+- **Download and install Go 1.21.6**  
+    ```bash
+    wget https://go.dev/dl/go1.21.6.linux-amd64.tar.gz
+    ```
+- **Extract the downloaded tarball**  
+    ```bash
+    tar xvzf go1.21.6.linux-amd64.tar.gz
+    ```
+- **Move Go to the correct directory**  
+    ```bash
+    sudo mv go /usr/local
+    ```
+- **Set the GOROOT and update the PATH in .bashrc**  
+    ```bash
+    echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
+    echo 'export GOPATH=$HOME/go' >> ~/.bashrc
+    echo 'export PATH=$GOROOT/bin:$GOPATH/bin:$PATH' >> ~/.bashrc
+    ```
+- **Reload .bashrc to apply changes**  
+    ```bash
+    source ~/.bashrc
+    ```
+- **Verify Go installation**  
+    ```bash
+    go version
+    ```
 
-# Extract the downloaded tarball
-tar xvzf go1.21.6.linux-amd64.tar.gz
-
-# Move Go to the correct directory
-sudo mv go /usr/local
-
-# Set the GOROOT and update the PATH in .bashrc
-echo 'export GOROOT=/usr/local/go' >> ~/.bashrc
-echo 'export GOPATH=$HOME/go' >> ~/.bashrc
-echo 'export PATH=$GOROOT/bin:$GOPATH/bin:$PATH' >> ~/.bashrc
-
-# Reload .bashrc to apply changes
-source ~/.bashrc
-
-# Verify Go installation
-go version -->
+---
 
 # Install Node.js
-<!-- curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - -->
+```bash
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs npm
- 
+```
+
+---
+
 # Install Pnpm
+```bash
 sudo npm install -g pnpm
- 
+```
+
+---
+
 # Install Make
+```bash
 sudo apt install -y make
- 
+```
+
+---
+
 # Install jq
+```bash
 sudo apt install -y jq
- 
+```
+
+---
+
 # Install direnv
+```bash
 sudo apt install -y direnv
+```
 
-<!-- Explicitly mention to keep this running -->
- Setup Avail DA-server
-Run avail-da server ( manually ).
-Navigate to
-git clone https://github.com/availproject/avail-alt-da-server.git
-cd avail-alt-da-server
+---
 
-Build Avail DA Server: make da-server
+### Avail DA Server Setup
+> **Note:**  
+> It’s essential to keep the Avail DA server running for subsequent steps.
 
-Run your DA sidecar: ./bin/avail-da-server ./cmd/avail --addr=localhost --port=8000 --avail.rpc=<WS url to an avail node> --avail.seed=<> --avail.appid=<>
+1. **Clone and Navigate to Avail DA Server**  
+    ```bash
+    git clone https://github.com/availproject/avail-alt-da-server.git
+    cd avail-alt-da-server
+    ```
+2. **Build Avail DA Server**  
+    ```bash
+    make da-server
+    ```
+3. **Run DA Sidecar**  
+    ```bash
+    ./bin/avail-da-server ./cmd/avail --addr=localhost --port=8000 --avail.rpc=<WS url to an avail node> --avail.seed=<> --avail.appid=<>
+    ```
+    > **Tip:**  
+    > WS URLs can be found [here](https://docs.availproject.org/docs/networks) or run your own DA node (more complex setup).
 
-<!-- WS url can be found here or can run your own DA node (harder)
-https://docs.availproject.org/docs/networks
- -->
+---
 
-Run using docker
-Copy .env.example to .env. Fill the values inside.
+### Running via Docker
+1. Copy `.env.example` to `.env` and fill in necessary values.
+2. Run the following commands:
+    ```bash
+    docker-compose build
+    docker-compose up
+    ```
 
-Run the following commands:
+---
 
-docker-compose build
-docker-compose up
+### Build the Adapter Source
+1. **Clone and Navigate to Avail Adapter**  
+    ```bash
+    git clone https://github.com/ethereum-optimism/optimism.git
+    cd optimism
+    git fetch --tag --all
+    git checkout v1.9.1
+    git submodule update --init --recursive
+    ```
+2. **Install Modules**  
+    ```bash
+    pnpm install
+    ```
+3. **Compile Necessary Packages**  
+    ```bash
+    make op-node op-batcher op-proposer
+    pnpm build
+    ```
 
-Build the Adapter Source
-Clone and navigate to the Avail adapter:
+---
 
-git clone https://github.com/ethereum-optimism/optimism.git
-cd optimism
-git fetch --tag --all
-git checkout v1.9.1
-git submodule update --init --recursive
+### Build the Optimism Geth Source
+1. **Clone and Navigate to op-geth**  
+    ```bash
+    git clone https://github.com/ethereum-optimism/op-geth.git
+    cd op-geth
+    git fetch --tag --all
+    git checkout v1.101408.0
+    ```
+2. **Compile op-geth**  
+    ```bash
+    make geth
+    ```
 
-Install modules:
-
-pnpm install
-
-Compile the necessary packages:
-
-make op-node op-batcher op-proposer
-pnpm build
-
-Build the Optimism Geth Source
-Clone and navigate to op-geth:
-
-git clone https://github.com/ethereum-optimism/op-geth.git
-cd op-geth
-git fetch --tag --all
-git checkout v1.101408.0
-
-Compile op-geth:
-
-make geth
-
-
-
-<!-- Sepolia links both invalid
-Update links to 
-https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia\
-for alchemy which will require api key
+--- 
 
 
-Generate and secure keys
 
-use of foundry not menitoned
 
-curl -L https://foundry.paradigm.xyz | bash
-source ~/.bashrc
+### Comments and Suggested Updates
 
-foundryup -->
+> **Feedback**  
+> - Sepolia links are invalid; update links to Alchemy: `https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia` (requires API key).  
+> - Mention use of Foundry:  
+    ```bash
+    curl -L https://foundry.paradigm.xyz | bash
+    source ~/.bashrc
+    foundryup
+    ```
+> - Add link for Avail wallet setup and app ID creation: [Avail Wallet Guide](https://docs.availproject.org/docs/end-user-guide/app-id).  
+> - Provide link for Avail tokens: [Avail Faucet](https://faucet.avail.tools/).
 
-<!-- use this guide to set up avail wallet and make app id
-https://docs.availproject.org/docs/end-user-guide/app-id
- -->
- <!-- go here for avail tokens for transaction fees
- https://faucet.avail.tools/
-  -->
+---
+
+### Key Account Creation
+
 Create four essential accounts with private keys:
 
-Admin (contract upgrade authority)
-Batcher (publishes Sequencer data to L1)
-Proposer (publishes L2 results to L1)
-Sequencer (signs blocks on the p2p network)
-You can use cast wallet in the contracts-bedrock package for key generation:
+- **Admin** (contract upgrade authority)
+- **Batcher** (publishes Sequencer data to L1)
+- **Proposer** (publishes L2 results to L1)
+- **Sequencer** (signs blocks on the p2p network)
 
-In the Optimism repo, navigate to the contracts-bedrock package:
+> **Note:**  
+> Consider reordering commands for clarity. Mention usage of `cast wallet` in the `contracts-bedrock` package for generating keys.
 
+```bash
 cd ~/optimism/packages/contracts-bedrock
-
-Generate accounts:
-<!-- reordered these -->
 echo "Admin:"
 cast wallet new
 echo "Batcher:"
@@ -142,120 +193,129 @@ echo "Proposer:"
 cast wallet new
 echo "Sequencer:"
 cast wallet new
+```
 
-You should see an output similar to:
+The output should be similar to:
 
+```plaintext
 Admin:
 Successfully created new keypair.
 Address:     0xc4A01194958DE0D90A876e8A5fc9D7B530072148
 Private key: 0xb8e39bd94a210e410c4024e1cc91014de45a5eb1e42f3aa99a368b5a5ac19b45
-Proposer:
-Successfully created new keypair.
-Address:     0xFC0374Ae658e46cA4022acA179d3cb6D8e1A4934
-Private key: 0xa9bc1b3f5deb1e00251df68bf86e3493b25bc5430665433546f2f9aacc748d1a
-Batcher:
-Successfully created new keypair.
-Address:     0xD6857B5BE9468Be67d64ABaB48459378d5329b96
-Private key: 0xe9cd8960fc7984a301d567b819e0c62871eb2c7239c2e66b8f319eaa45c3cbd5
-Sequencer:
-Successfully created new keypair.
-Address:     0x33348817E4B1192D576C4f157e9a5EC93dc5392D
-Private key: 0xd98b49e11e4e0be9931017831395e6644a50c36285d08e14d1a479af5ee08675
+...
+```
 
-Record and securely store these key details. You'll need to fund Admin, Proposer, and Batcher with Sepolia ETH (0.5 ETH for Admin, 0.2 ETH for Proposer, 0.1 ETH for Batcher).
+> **Important:**  
+> Securely record these key details. Fund **Admin**, **Proposer**, and **Batcher** with Sepolia ETH (e.g., 0.5 ETH for Admin, 0.2 for Proposer, 0.1 for Batcher).  
 
-NOTE FOR PRODUCTION
-Use secure hardware for key management in production environments. cast wallet is not designed for production deployments.
+> **Production Note:**  
+> Use secure hardware for production key management as `cast wallet` is not production-ready.
 
+---
 
-Network Configuration and Setup
-After building the repositories, configure your chain settings in the contracts-bedrock package.
+### Network Configuration and Setup
 
-Ensure you are in the contracts-bedrock sub-directory:
+Configure chain settings after repository setup in the `contracts-bedrock` package.
 
+> **Feedback**  
+> - Instruct user to copy `.envrc.example` into `.envrc` within `contracts-bedrock`.  
+> - Update the example to match order of commands for user roles.
+
+```bash
 cd ~/optimism/packages/contracts-bedrock
-
-Activate the environment with direnv:
-
-If you need to install direnv, ensure you also modify the shell configuration.
-
-
-<!-- .envrc file not found, instruct user to copy .envrc.example into packages/contracts-bedrock .envrc after creating it
-
-example has types of users in wrong order, re order command to minimize mistakes
-
-explicitly mention using saved values from cast commands in the .envrc we copied -->
-
 direnv allow .
-
-<!-- provide link to sample .envrc https://github.com/ethereum-optimism/optimism/blob/develop/.envrc.example -->
-
-
-<!-- mention this -->
-export L1_RPC_URL="https://eth-sepolia.g.alchemy.com/v2/<your-api-key>"
-
-<!-- missed step -->
 source .envrc
+```
 
-Core Contract Deployment
-Deploy essential L1 contracts for the chain’s functionality:
+> **Link:**  
+> Sample `.envrc` example: [Github Link](https://github.com/ethereum-optimism/optimism/blob/develop/.envrc.example)
 
-Update /optimism/packages/contracts-bedrock/deploy-config and update file getting_started.json.
-cd packages/contracts-bedrock
-./scripts/getting-started/config.sh
+---
 
-<!-- mention getting_started.json is generated in deploy-config folder-->
+### Core Contract Deployment
+
+Update `deploy-config/getting-started.json` in `contracts-bedrock` for deployment.
+
+> **Feedback**  
+> Mention `getting_started.json` file is generated in the `deploy-config` folder.
+
+```bash
 cd deploy-config
 nano getting-started.json
+```
 
-Add the following at the bottom of the config generated:
- "useAltDA": true,
+Add configuration for AltDA usage:
+
+```json
+{
+  "useAltDA": true,
   "daCommitmentType": "GenericCommitment",
   "daChallengeWindow": 160,
   "daResolveWindow": 160,
   "daBondSize": 1000000,
   "daResolverRefundPercentage": 0
+}
+```
 
-  Example config ( for reference purpose ):
+---
 
+### Example Configuration
+
+> **Reference Configuration:**  
+> The following is an example config for reference purposes.
+
+```json
 {
-  "l1StartingBlockTag": "0x2c9f156ae1cc024817b920b41c102b23b5a7526e16220c517078341f9890e8bd",
+
+ "l1StartingBlockTag": "0x0b2b81474a22fc1122bbb3a465985c5cb40dfd8ef18bfe4fc0a9fa47e775d692",
+
   "l1ChainID": 11155111,
-  "l2ChainID": 11155420,
+  "l2ChainID": 42069,
   "l2BlockTime": 2,
   "l1BlockTime": 12,
+
   "maxSequencerDrift": 600,
   "sequencerWindowSize": 3600,
   "channelTimeout": 300,
-  "p2pSequencerAddress": "0x15cb6e5fa6a7134F3f6f5a9130F70c1344162b77",
+
+  "p2pSequencerAddress": "0xd34514056DBE102dF5c24DAf3e78701b502F34c7",
   "batchInboxAddress": "0xff00000000000000000000000000000000042069",
-  "batchSenderAddress": "0x5bd31d51C4041108c238473f27BF5f72311b1bcF",
+  "batchSenderAddress": "0x4eD53FeB5b06c60368490683e2b317d7C20eC41E",
+
   "l2OutputOracleSubmissionInterval": 120,
   "l2OutputOracleStartingBlockNumber": 0,
-  "l2OutputOracleStartingTimestamp": 1725740628,
-  "l2OutputOracleProposer": "0x07B4c44290fD2Fba85d7924Fbf4A6499661bBe53",
-  "l2OutputOracleChallenger": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
+  "l2OutputOracleStartingTimestamp": 1729571268,
+
+  "l2OutputOracleProposer": "0x7d32557e4e79F494836037aD622AaB60125D8323",
+  "l2OutputOracleChallenger": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+
   "finalizationPeriodSeconds": 12,
-  "proxyAdminOwner": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
-  "baseFeeVaultRecipient": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
-  "l1FeeVaultRecipient": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
-  "sequencerFeeVaultRecipient": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
-  "finalSystemOwner": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
-  "superchainConfigGuardian": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
+
+  "proxyAdminOwner": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+  "baseFeeVaultRecipient": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+  "l1FeeVaultRecipient": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+  "sequencerFeeVaultRecipient": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+  "finalSystemOwner": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+  "superchainConfigGuardian": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+
   "baseFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "l1FeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "sequencerFeeVaultMinimumWithdrawalAmount": "0x8ac7230489e80000",
   "baseFeeVaultWithdrawalNetwork": 0,
   "l1FeeVaultWithdrawalNetwork": 0,
   "sequencerFeeVaultWithdrawalNetwork": 0,
+
   "gasPriceOracleOverhead": 0,
   "gasPriceOracleScalar": 1000000,
+
   "enableGovernance": true,
   "governanceTokenSymbol": "OP",
   "governanceTokenName": "Optimism",
-  "governanceTokenOwner": "0x79A953eAc59e40B3c7567a4cfc446c4B4912722f",
+  "governanceTokenOwner": "0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247",
+
   "l2GenesisBlockGasLimit": "0x1c9c380",
   "l2GenesisBlockBaseFeePerGas": "0x3b9aca00",
+
   "eip1559Denominator": 50,
   "eip1559DenominatorCanyon": 250,
   "eip1559Elasticity": 6,
@@ -265,8 +325,10 @@ Add the following at the bottom of the config generated:
   "l2GenesisDeltaTimeOffset": "0x0",
   "l2GenesisCanyonTimeOffset": "0x0",
   "systemConfigStartBlock": 0,
+
   "requiredProtocolVersion": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "recommendedProtocolVersion": "0x0000000000000000000000000000000000000000000000000000000000000000",
+
   "faultGameAbsolutePrestate": "0x03c7ae758795765c6664a5d39bf63841c71ff191e9189522bad8ebff5d4eca98",
   "faultGameMaxDepth": 44,
   "faultGameClockExtension": 0,
@@ -275,8 +337,10 @@ Add the following at the bottom of the config generated:
   "faultGameGenesisOutputRoot": "0x0000000000000000000000000000000000000000000000000000000000000000",
   "faultGameSplitDepth": 14,
   "faultGameWithdrawalDelay": 600,
+
   "preimageOracleMinProposalSize": 1800000,
   "preimageOracleChallengePeriod": 300,
+
   "useAltDA": true,
   "daCommitmentType": "GenericCommitment",
   "daChallengeWindow": 160,
@@ -284,6 +348,8 @@ Add the following at the bottom of the config generated:
   "daBondSize": 1000000,
   "daResolverRefundPercentage": 0
 }
+
+```
 
 
 
