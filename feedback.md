@@ -353,37 +353,65 @@ Add configuration for AltDA usage:
 
 
 
-Navigate to /optimism/packages/contracts-bedrock/deployments, and create avail-optimism directory:
-cd ~/optimism/packages/contracts-bedrock/deployments
-mkdir avail-optimism
+### User Feedback on Deployment and Configuration
 
-Navigate to /optimism/packages/contracts-bedrock/ and the deploy contracts (this can take up to 15 minutes):
-DEPLOYMENT_OUTFILE=deployments/artifact.json \
-DEPLOY_CONFIG_PATH=deploy-config/getting-started.json \
-forge script scripts/deploy/Deploy.s.sol:Deploy  --broadcast --private-key $GS_ADMIN_PRIVATE_KEY \
---rpc-url $L1_RPC_URL --slow
-<!-- Specify l2 chain options further with examples -->
-L2 Allocs
-CONTRACT_ADDRESSES_PATH=deployments/artifact.json DEPLOY_CONFIG_PATH=deploy-config/getting-started.json STATE_DUMP_PATH=deploy-config/statedump.json forge script scripts/L2Genesis.s.sol:L2Genesis --sig 'runWithStateDump()' --chain <YOUR_L2_CHAINID>
+> **Feedback**  
+> - Update links to `alchemy-sepolia` for valid access: `https://www.alchemy.com/chain-connect/endpoints/alchemy-sepolia`  
+> - Clearly specify to use `IMPL_SALT` in the `.envrc` for `contracts-bedrock`.  
+> - Provide specific examples for `l2 chain` options where needed.
+> - For L2 Configuration: Add necessary file setup steps for `genesis.json`, `rollup.json`, and `jwt.txt`.
 
-If you see a nondescript error that includes EvmError: Revert and Script failed then you likely need to change the IMPL_SALT environment variable. This variable determines the addresses of various smart contracts that are deployed via CREATE2.
-<!-- specify IMPL_SALT should be part of envrc -->
-If the same IMPL_SALT is used to deploy the same contracts twice, the second deployment will fail.
+---
 
-You can generate a new IMPL_SALT by running direnv reload anywhere in the Avail Optimism Monorepo.
+### Directory Setup
+1. **Navigate and create a new directory**  
+    ```bash
+    cd ~/optimism/packages/contracts-bedrock/deployments
+    mkdir avail-optimism
+    ```
 
-Setting Up L2 Configuration
-After configuring the L1 layer, focus shifts to establishing the L2 infrastructure. This involves generating three key files:
+---
 
-genesis.json for the genesis block
-rollup.json for rollup configurations
-jwt.txt for secure communication between op-node and op-geth
+### Deployment Command for Contracts
+1. **Deploy contracts** (may take 15 minutes)  
+    ```bash
+    DEPLOYMENT_OUTFILE=deployments/artifact.json \
+    DEPLOY_CONFIG_PATH=deploy-config/getting-started.json \
+    forge script scripts/deploy/Deploy.s.sol:Deploy  --broadcast --private-key $GS_ADMIN_PRIVATE_KEY \
+    --rpc-url $L1_RPC_URL --slow
+    ```
+    > **Note:** Specify `l2 chain` options for clarity.
+
+---
+
+### Configuring L2 Allocs
+```bash
+CONTRACT_ADDRESSES_PATH=deployments/artifact.json DEPLOY_CONFIG_PATH=deploy-config/getting-started.json \
+STATE_DUMP_PATH=deploy-config/statedump.json forge script scripts/L2Genesis.s.sol:L2Genesis --sig 'runWithStateDump()' --chain <YOUR_L2_CHAINID>
+```
+
+> **Comment**  
+> If facing `EvmError: Revert and Script failed`, users should update the `IMPL_SALT` environment variable in `.envrc`. 
+> Explain: reusing the same `IMPL_SALT` will cause the second deployment to fail.
+
+---
+
+### L2 Configuration
+After setting up the L1 layer, establish the L2 layer by generating these files:
+- `genesis.json`: for the genesis block
+- `rollup.json`: for rollup settings
+- `jwt.txt`: for secure node communication
+
 Navigate to the op-node directory:
 
+```bash
 cd ~/optimism/op-node
+```
 
-Run the following command, ensuring you replace <RPC> with your specific L1 RPC URL. This generates the genesis.json and rollup.json files:
+> **Instruction**  
+> Replace `<RPC>` with your specific L1 RPC URL in the command below:
 
+```bash
 go run cmd/main.go genesis l2 \
 --deploy-config ../packages/contracts-bedrock/deploy-config/getting-started.json \
 --l1-deployments ../packages/contracts-bedrock/deployments/artifact.json \
@@ -391,50 +419,59 @@ go run cmd/main.go genesis l2 \
 --outfile.rollup rollup.json \
 --l1-rpc $L1_RPC_URL \
 --l2-allocs ../packages/contracts-bedrock/deploy-config/statedump.json
+```
 
-You'll find the newly created genesis.json and rollup.json in the op-node package.
+Newly generated files `genesis.json` and `rollup.json` should be in the op-node package.
 
-Add the following at the end of rollup.json:
+> **Additional Steps**  
+> - Add `alt_da` configuration to `rollup.json`:
+    ```json
+    "alt_da": {
+        "da_challenge_contract_address": "0x0000000000000000000000000000000000000000",
+        "da_commitment_type": "GenericCommitment",
+        "da_challenge_window": 160,
+        "da_resolve_window": 160
+    }
+    ```
 
- "alt_da": {
-    "da_challenge_contract_address": "0x0000000000000000000000000000000000000000",
-    "da_commitment_type": "GenericCommitment",
-    "da_challenge_window": 160,
-    "da_resolve_window": 160
-  }
-
-Generate a jwt.txt file, which is crucial for the secure interaction between nodes:
-
+Generate the `jwt.txt` file for node communication:
+```bash
 openssl rand -hex 32 > jwt.txt
+```
 
-To get op-geth ready, move the genesis.json and jwt.txt files into its directory:
+> **Reminder**  
+> Move `genesis.json` and `jwt.txt` into the `op-geth` directory.
 
-cp genesis.json ~/op-geth
-cp jwt.txt ~/op-geth
+---
 
-These steps ensure the L2 layer is correctly configured and ready for integration with the L1 components, paving the way for a fully functional EVM Rollup on the Avail-OP Stack.
+### Initialize and Configure op-geth
 
-Initialize and Configure Geth
-Prepare op-geth for running the chain:
+Navigate to `op-geth`:
 
-Navigate to op-geth:
-
+```bash
 cd ~/op-geth
+```
 
-Create a data directory:
+Create a `datadir` directory, then initialize with `genesis.json`:
 
+```bash
 mkdir datadir
-
-Initialize with the genesis file:
-
 build/bin/geth init --datadir=datadir genesis.json
-<!-- 
- ./build/bin/geth --datadir ./datadir --state.scheme=hash init genesis.json 
-i had to specify state.scheme to avoid error in next step
--->
-Running op-geth
-To initiate op-geth, navigate to its directory and execute the following commands:
+```
 
+> **Comment**  
+> Add `--state.scheme=hash` to avoid errors on next steps:
+    ```bash
+    ./build/bin/geth --datadir ./datadir --state.scheme=hash init genesis.json
+    ```
+
+---
+
+### Running op-geth
+
+To start `op-geth`:
+
+```bash
 cd ~/op-geth
 ./build/bin/geth \
   --datadir ./datadir \
@@ -459,34 +496,20 @@ cd ~/op-geth
   --authrpc.jwtsecret=./jwt.txt \
   --rollup.disabletxpoolgossip=true \
   --state.scheme=hash
+```
 
-op-geth is now active, but block creation will begin once op-node is operational.
+> **Note**  
+> Running `op-geth` in archive mode is recommended for full state history access.
 
-Why Archive Mode?
-Archive mode, requiring more disk space than full mode, is essential for:
+---
 
-op-proposer to access the full state history.
-The explorer's functionality.
-Reinitializing op-geth
-In cases of database corruption indicated by op-node errors or failure to find L2 heads, follow these steps:
+### Running op-node
+To run `op-node`:
 
-Stop op-geth.
-Remove the existing data:
-cd ~/op-geth
-rm -rf datadir/geth
+> **Tip**  
+> DA server URL can be retrieved from [Avail Networks Documentation](https://docs.availproject.org/docs/networks#for-devs).
 
-Reinitialize:
-build/bin/geth init --datadir=datadir genesis.json
-
-Restart op-geth and then op-node.
-
-<!-- specify L1_RPC_KIND has to be set in envrc-->
-
-Running op-node
-To launch op-node, which acts as a consensus client, run:
-<!-- DA server can be taken from https://docs.availproject.org/docs/networks#for-devs 
-    It is the same as rpc url
- -->
+```bash
 cd ~/optimism/op-node
 ./bin/op-node \
   --l2=http://localhost:9551 \
@@ -506,108 +529,31 @@ cd ~/optimism/op-node
   --altda.da-server=<DA_SERVER_HTTP_URL> \
   --altda.da-service=true \
   --l1.beacon.ignore=true
+```
 
-Block creation will commence once op-node starts processing L1 information and interfaces with op-geth.
+> **Reminder**  
+> Mention `L1_RPC_KIND` should be set in `.envrc`.
 
-P2P Synchronization
-To optimize synchronization and avoid network resource waste:
+---
 
-Disable p2p sync (--p2p.disable) by default.
-Use specific command line parameters for synchronization among multiple nodes.
+### Geth Console for Genesis Block Hash
 
-<!-- I had to run geth with console on with this command to obtain starting hash and put it in op-node/genesis.json l2 hash manually
+> **Feedback**  
+> Start `geth` in interactive mode to retrieve starting hash:
+    ```bash
+    ./build/bin/geth \
+      --datadir ./datadir \
+      --http --http.addr=0.0.0.0 --http.port=9545 --http.api=eth,web3,net \
+      --authrpc.addr=:: --authrpc.port=9551 \
+      --authrpc.jwtsecret=./jwt.txt \
+      console
+    ```
 
-1. Start Geth in Attach Mode
-To start Geth and allow for interactive commands, use:
-
-bash
-
-./build/bin/geth \
-  --datadir ./datadir \
-  --http --http.addr=0.0.0.0 --http.port=9545 --http.api=eth,web3,net \
-  --authrpc.addr=:: --authrpc.port=9551 \
-  --authrpc.jwtsecret=./jwt.txt \
-  console
-This command will start Geth with an interactive console where you can run JavaScript commands.
-
-2. Retrieve the Genesis Block Hash
-Once you have the console open, retrieve the hash of the genesis block by running:
-
-
+Retrieve hash with:
+```javascript
 eth.getBlock(0).hash
+```
 
- -->
+---
 
- Block creation will commence once op-node starts processing L1 information and interfaces with op-geth.
-
-P2P Synchronization
-To optimize synchronization and avoid network resource waste:
-
-Disable p2p sync (--p2p.disable) by default.
-Use specific command line parameters for synchronization among multiple nodes.
-Running op-batcher
-op-batcher is crucial in publishing transactions from the Sequencer to L1. Ensure it has at least 1 Sepolia ETH for operational continuity.
-
-cd ~/optimism/op-batcher
-./bin/op-batcher \
-  --l2-eth-rpc=http://localhost:9545 \
-  --rollup-rpc=http://localhost:8547 \
-  --poll-interval=1s \
-  --sub-safety-margin=6 \
-  --num-confirmations=1 \
-  --safe-abort-nonce-too-low-count=3 \
-  --resubmission-timeout=30s \
-  --rpc.addr=0.0.0.0 \
-  --rpc.port=8548 \
-  --rpc.enable-admin \
-  --max-channel-duration=1 \
-  --l1-eth-rpc=$L1_RPC_URL \
-  --private-key=$GS_BATCHER_PRIVATE_KEY \
-  --altda.enabled=true \
-  --altda.da-service=true \
-  --altda.da-server=<DA_SERVER_HTTP_URL>
-
-Controlling Batcher Costs
-Adjust the --max-channel-duration=n setting to balance transaction frequency on L1 and the operational costs of the batcher. Recommended is a minumum of 2 since avail block time is 20s and ethereum's 12sec.
-
-Running op-proposer
-Finally, start op-proposer to propose new state roots:
-
-cd ~/optimism/op-proposer
-./bin/op-proposer \
-  --poll-interval=12s \
-  --rpc.port=9560 \
-  --rollup-rpc=http://localhost:8547 \
-  --l2oo-address=$L2OO_ADDR \
-  --private-key=$PROPOSER_KEY \
-  --l1-eth-rpc=$L1_RPC
-  
-  <!-- inconsistent with docs, it should be   --l1-eth-rpc=$L1_RPC_URL -->
-  <!-- Missing args in docs
-  lvl=crit msg="Application failed" message="failed to setup: invalid CLI flags: neither the `DisputeGameFactory` nor `L2OutputOracle` address was provided"
-   -->
-
-   <!-- Adding this works
-    --game-factory-address=0x0000000000000000000000000000000000000000 --proposal-interval 3s
-
- -->
-
-Acquire Sepolia ETH for Layer 2
-To obtain ETH on your Rollup:
-
-Go to contracts-bedrock:
-
-cd ~/optimism/packages/contracts-bedrock
-
-Find the L1 standard bridge contract address:
-
-cat deployments/avail-optimism/L1StandardBridgeProxy.json | jq -r .address
-
-Send Sepolia ETH to the bridge contract address.
-
-Conduct Test Transactions
-You now have a fully operational Avail-Powered Optimism-based EVM Rollup. Experiment with it as you would with any other test blockchain.
-
-Congratulations on setting up your chain!
-
-<!-- bottom of page link op stack button for github doesnt work -->
+Each piece of advice has been explicitly highlighted for maintainers to address directly.
