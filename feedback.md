@@ -555,5 +555,3 @@ eth.getBlock(0).hash
 ```
 
 ---
-
-Each piece of advice has been explicitly highlighted for maintainers to address directly.
