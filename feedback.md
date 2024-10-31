@@ -1,3 +1,10 @@
+# Introduction
+
+Embark on setting up your own Avail-Optimism chain. This guide targets Ethereum's Sepolia testnet and Avail Turing testnet. For a detailed understanding, review the Optimism Documentation.
+
+# Prerequisites
+
+Ensure you have installed the following software.
 
 > Mismatch in commands and docs
 
