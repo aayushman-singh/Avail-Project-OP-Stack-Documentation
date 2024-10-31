@@ -1,0 +1,30 @@
+More elaborate example with all missing variables from docs
+
+# Admin account
+export GS_ADMIN_ADDRESS="0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247"
+export GS_ADMIN_PRIVATE_KEY="0x91c7103a9e5615912fe0b530bea6b4035d9daf36e9a37d9cc9e59df2d33a6e00"
+
+# Batcher account
+export GS_BATCHER_ADDRESS="0x4eD53FeB5b06c60368490683e2b317d7C20eC41E"
+export GS_BATCHER_PRIVATE_KEY="0xb874da67bf8215e2481f346b9e305ed774297325e1acbb16b337f8287141ded5"
+
+# Proposer account
+export GS_PROPOSER_ADDRESS="0x7d32557e4e79F494836037aD622AaB60125D8323"
+export GS_PROPOSER_PRIVATE_KEY="0xf5712e954345bbee59cbe16d0304b60bce8dcd1f5dc4432830add353040bef0e"
+
+# Sequencer account
+export GS_SEQUENCER_ADDRESS="0xd34514056DBE102dF5c24DAf3e78701b502F34c7"
+export GS_SEQUENCER_PRIVATE_KEY="0x09da0b583da913c48823cf0871f983e61400965c331d3eb510b9151e2bd35c21"
+
+# L1 chain information
+export L1_CHAIN_ID=11155111
+export L1_BLOCK_TIME=12
+
+# L2 chain information
+export L2_CHAIN_ID=42069
+export L2_BLOCK_TIME=2
+
+# RPC URL for the L1 network to interact with
+export L1_RPC_URL="https://proud-cosmopolitan-paper.ethereum-sepolia.quiknode.pro/8678d58bdc7b392d5f4cc6b90fbd4cf432753830"
+export IMPL_SALT="f8f7991b24fed19f13e39581eb17bf3a1010993dfecf45f390a4689565e5bc05"
+export DA_SERVER_HTTP_URL="https://turing-rpc.avail.so/rpc"

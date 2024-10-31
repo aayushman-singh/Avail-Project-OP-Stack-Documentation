@@ -1,0 +1,25 @@
+root@DESKTOP-47VGQDK:~/avail-project/optimism/packages/contracts-bedrock# echo "Admin:"
+cast wallet new
+echo "Batcher:"
+cast wallet new
+echo "Proposer:"
+cast wallet new
+echo "Sequencer:"
+cast wallet new
+
+Admin:
+Successfully created new keypair.
+Address:     0x6A06226C406f7298E1F7CF3F1aa72f3Bc5eF4247
+Private key: 0x91c7103a9e5615912fe0b530bea6b4035d9daf36e9a37d9cc9e59df2d33a6e00
+Batcher:
+Successfully created new keypair.
+Address:     0x4eD53FeB5b06c60368490683e2b317d7C20eC41E
+Private key: 0xb874da67bf8215e2481f346b9e305ed774297325e1acbb16b337f8287141ded5
+Proposer:
+Successfully created new keypair.
+Address:     0x7d32557e4e79F494836037aD622AaB60125D8323
+Private key: 0xf5712e954345bbee59cbe16d0304b60bce8dcd1f5dc4432830add353040bef0e
+Sequencer:
+Successfully created new keypair.
+Address:     0xd34514056DBE102dF5c24DAf3e78701b502F34c7
+Private key: 0x09da0b583da913c48823cf0871f983e61400965c331d3eb510b9151e2bd35c21
