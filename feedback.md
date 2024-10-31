@@ -6,6 +6,19 @@ Embark on setting up your own Avail-Optimism chain. This guide targets Ethereum'
 
 Ensure you have installed the following software.
 
+"""
+| Software | Version    |
+|----------|------------|
+| Git      | OS default |
+| Go       | 1.21       |
+| Node     | ^20        |
+| Pnpm     | 8.5.6      |
+| Make     | OS default |
+| jq       | OS default |
+| direnv   | Latest     |
+| Foundry  | ^0.2.0     |
+"""
+
 > Mismatch in commands and docs
 
 > **Note:**  
